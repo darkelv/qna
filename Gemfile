@@ -35,6 +35,15 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 4.0.0'
   gem 'factory_bot_rails'
+
+  # Pry stuff
+  gem 'pry-rails'
+  gem 'pry-pretty-numeric' # 1_234_768
+  gem 'pry-doc' # ? loop
+  gem 'pry-docmore'
+  gem "pry-stack_explorer" # show-stack in console
+  gem 'pry-byebug' # step, next, finish, continue, break
+  gem 'awesome_print' # nice inspection in console
 end
 
 group :development do
