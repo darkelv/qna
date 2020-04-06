@@ -24,15 +24,26 @@ gem 'jbuilder', '~> 2.7'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
+gem 'decent_exposure', '3.0.0'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
+gem 'slim-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 4.0.0'
   gem 'factory_bot_rails'
+
+  # Pry stuff
+  gem 'pry-rails'
+  gem 'pry-pretty-numeric' # 1_234_768
+  gem 'pry-doc' # ? loop
+  gem 'pry-docmore'
+  gem "pry-stack_explorer" # show-stack in console
+  gem 'pry-byebug' # step, next, finish, continue, break
+  gem 'awesome_print' # nice inspection in console
 end
 
 group :development do
