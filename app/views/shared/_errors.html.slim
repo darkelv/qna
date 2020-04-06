@@ -1,0 +1,8 @@
+- if resource.present? && resource.errors.present?
+  = content_tag :div, class: 'resource-errors', data: { resource_id: resource.id } do
+  h2
+    span>
+      = "#{resource.errors.count}  error(s) detected: "
+  ul
+    -resource.errors.full_messages.each do |messege|
+      li = messege
