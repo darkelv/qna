@@ -5,12 +5,11 @@ class AnswersController < ApplicationController
   expose :answer, shallow_parent: :question
 
   def create
-    answer = question.answers.new(answer_params)
-
+    answer = question.answers.new(answer_params.merge(user: current_user))
     if answer.save
       redirect_to question_path(question)
     else
-      flash[:alert] ="Answer can't be create"
+      flash[:alert] = "Answer can't be create"
       render 'questions/show'
     end
   end
@@ -24,8 +23,10 @@ class AnswersController < ApplicationController
   end
 
   def destroy
+    return redirect_to question_path(answer.question) unless current_user.answers.include?(answer)
+
     answer.destroy
-    redirect_to question_path(answer.question)
+    redirect_to question_path(answer.question), notice: "Your answer with title #{answer.title} successfully delete."
   end
 
   private

@@ -3,4 +3,8 @@ p = question.body
 -question.answers.each do |answer|
   p= answer.title
   p= answer.body
+  - if answer.id.present?
+    p= link_to 'Delete answer', answer_path(answer), method: :delete
 = render 'answers/form', {question: question, answer: question.answers.build}
+
+= link_to 'Delete question', question_path(question), method: :delete

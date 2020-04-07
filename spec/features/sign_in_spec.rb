@@ -43,7 +43,6 @@ feature 'User can sign in', %q(
 
   describe "Unregistered user" do
     scenario 'tries to sign in' do
-
       fill_in 'Email', with: 'wrong@user.ru'
       fill_in 'Password', with: '12345678'
       click_on 'Log in'
@@ -52,7 +51,6 @@ feature 'User can sign in', %q(
     end
 
     scenario 'tries to sign up' do
-
       click_on 'Sign up'
       fill_in 'Email', with: 'wrong@user.ru'
       fill_in 'Password', with: '12345678'

@@ -2,8 +2,8 @@ require 'rails_helper'
 
 feature 'User can write an answer to question' do
   given(:user) { create(:user) }
-  given(:question) { create(:question) }
-  given (:answer) { create(:answer) }
+  given(:question) { create(:question, user: user) }
+  given!(:answer) { create(:answer, user: user, question: question) }
 
   describe 'Authenticated user' do
     background do
@@ -28,6 +28,7 @@ feature 'User can write an answer to question' do
 
   scenario 'Unauthenticated user can answer the question' do
     visit question_path(question)
+
     click_on "Answer the question"
 
     expect(page).to have_content 'You need to sign in or sign up before continuing.'
