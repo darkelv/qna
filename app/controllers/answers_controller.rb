@@ -1,4 +1,5 @@
 class AnswersController < ApplicationController
+  before_action :authenticate_user!, except: [:show]
   expose :question, shallow_child: :answer
   expose :answers, from: :question
   expose :answer, shallow_parent: :question
@@ -7,9 +8,10 @@ class AnswersController < ApplicationController
     answer = question.answers.new(answer_params)
 
     if answer.save
-      redirect_to answer_path(answer)
+      redirect_to question_path(question)
     else
-      render :new
+      flash[:alert] ="Answer can't be create"
+      render 'questions/show'
     end
   end
 

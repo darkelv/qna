@@ -1,2 +1,6 @@
 h1 = question.title
 p = question.body
+-question.answers.each do |answer|
+  p= answer.title
+  p= answer.body
+= render 'answers/form', {question: question, answer: question.answers.build}
