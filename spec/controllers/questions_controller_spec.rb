@@ -98,5 +98,20 @@ RSpec.describe QuestionsController, type: :controller do
       delete :destroy, params: { id: question }
       expect(response).to redirect_to questions_path
     end
+
+    context 'with incorrect user' do
+      let(:incorrect_user) { create(:user) }
+
+      before { login(incorrect_user) }
+
+      it 'does not allow to destroy' do
+        expect { delete :destroy, params: { id: question } }.not_to change(Question, :count)
+      end
+
+      it 'redirect to question' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to question
+      end
+    end
   end
 end

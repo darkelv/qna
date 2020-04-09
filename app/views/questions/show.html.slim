@@ -1,10 +1,12 @@
-h1 = question.title
-p = question.body
--question.answers.each do |answer|
-  p= answer.title
-  p= answer.body
-  - if answer.id.present?
-    p= link_to 'Delete answer', answer_path(answer), method: :delete
-= render 'answers/form', {question: question, answer: question.answers.build}
+h1 = @question.title
+p = @question.body
 
-= link_to 'Delete question', question_path(question), method: :delete
+- @answers.each do |answer|
+  p = answer.body
+  - if answer.persisted? and current_user&.author_of?(answer)
+    p= link_to 'Delete answer', answer_path(question_id: @question, id: answer), method: :delete
+
+- if current_user
+  =render 'answers/form', locals: { question: @question, answer: @answer}
+  -if current_user.author_of?(@question)
+    = link_to 'Delete question', question_path(@question), method: :delete

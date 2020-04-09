@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let(:question) { create(:question) }
-  let(:answer) { create(:answer, question: question) }
-  before { login(question.user) }
+  let!(:question) { create(:question) }
+  let(:user) { create(:user) }
+
+  before { login(user) }
 
   describe 'GET #index' do
     let(:answers) { create_list(:answer, 3) }
@@ -15,26 +16,23 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
-  describe 'GET #show' do
-    before { get :show, params: { id: answer } }
-    it 'renders show view' do
-      expect(response).to render_template :show
-    end
-  end
-
-  describe 'GET #new' do
-    before { get :new , params: { question_id: question}}
-
-    it 'renders new view' do
-      expect(response).to render_template :new
-    end
-  end
-
   describe 'GET #edit' do
-    before { get :edit, params: { question_id: question, id: answer } }
+    let(:answer) { create(:answer, user: user) }
 
-    it 'renders edit view' do
-      expect(response).to render_template :edit
+    before do
+      get :edit, params: { question_id: question, id: answer }
+    end
+
+    it 'assigns the requested answer to @answer' do
+      expect(assigns(:answer)).to eq(answer)
+    end
+
+    it 'does not allow to edit for other user' do
+      answer = create(:answer)
+
+      get :edit,  params: { question_id: question, id: answer }
+
+      expect(response).to redirect_to question
     end
   end
 
@@ -49,53 +47,93 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not save the answer' do
         expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) } }.to_not change(question.answers, :count)
       end
+
       it 're-renders new view' do
         post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }
-        expect(response).to render_template 'questions/show'
+
+        expect(response).to redirect_to question
       end
     end
   end
 
   describe 'PATH #update' do
+    let(:answer) { create(:answer, user: user) }
+
     context 'with valid attributes' do
       it 'changes answer attributes' do
-        patch :update, params: { question_id: question, id: answer, answer: { title: 'new title', body: 'new body'} }
+        patch :update, params: { question_id: question, id: answer, answer: { body: 'new body'} }
         answer.reload
 
-        expect(answer.title).to eq 'new title'
         expect(answer.body).to eq 'new body'
 
       end
       it 'redirect update answer' do
         patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
-        expect(response).to redirect_to answer
+        expect(response).to redirect_to question
+      end
+
+      it 'does not allow to update for other user' do
+        answer = create(:answer)
+
+        patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
+
+        expect(response).to redirect_to question
       end
     end
 
     context 'with invalid attributes' do
       before { patch :update, params: {  question_id: question, id: answer, answer: attributes_for(:answer, :invalid) } }
-
       it 'does not change answer' do
         answer.reload
 
-        expect(answer.title).to eq 'MyString'
-        expect(answer.body).to eq 'MyText'
-      end
-      it 're-render edit view' do
-        expect(response).to render_template :edit
+        expect(answer.body).to eq answer.body
       end
     end
   end
 
   describe 'DELETE #destroy' do
-    let!(:answer) { create(:answer, user: question.user) }
+    let!(:answer) { create(:answer, question: question, user: user) }
+    before { login(user) }
 
-    it 'delete the answer' do
-      expect { delete :destroy, params: { question_id: question, id: answer } }.to change(Answer, :count).by(-1)
+    context 'with correct user' do
+      it 'deletes answer' do
+        expect { delete :destroy, params: { question_id: question, id: answer } }.to change(question.answers, :count).by(-1)
+      end
+
+      it 'redirect to question view' do
+        delete :destroy, params: { question_id: question, id: answer }
+        expect(response).to redirect_to question
+      end
     end
-    it 'redirects to index' do
-      delete :destroy, params: { id: answer }
-      expect(response).to redirect_to question_path(answer.question)
+
+    context 'with incorrect user' do
+      let!(:answer) { create(:answer, question: question, user: user) }
+
+      context 'with correct user' do
+        it 'deletes answer' do
+          expect { delete :destroy, params: { question_id: question, id: answer } }.to change(question.answers, :count).by(-1)
+        end
+
+        it 'redirect to question view' do
+          delete :destroy, params: { question_id: question, id: answer }
+          expect(response).to redirect_to question
+        end
+      end
+
+      context 'with incorrect user' do
+        let(:incorrect_user) { create(:user) }
+
+        before { login(incorrect_user) }
+
+        it 'does not allow to destroy' do
+          expect { delete :destroy, params: { question_id: question, id: answer } }.not_to change(question.answers, :count)
+        end
+
+        it 'redirect to question' do
+          delete :destroy, params: { question_id: question, id: answer }
+          expect(response).to redirect_to question
+        end
+      end
     end
   end
 end

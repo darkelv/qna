@@ -80,8 +80,6 @@ GEM
     concurrent-ruby (1.1.6)
     crass (1.0.6)
     debug_inspector (0.0.3)
-    decent_exposure (3.0.0)
-      activesupport (>= 4.0)
     devise (4.7.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -283,7 +281,6 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)
-  decent_exposure (= 3.0.0)
   devise
   factory_bot_rails
   jbuilder (~> 2.7)
