@@ -15,7 +15,6 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @answers = @question.answers
     @answer = @question.answers.build(user: current_user) if current_user
   end
 

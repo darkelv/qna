@@ -27,4 +27,13 @@ feature "Author can remove your answer and can't remove other" do
     end
   end
 
+  describe 'user not login' do
+    background do
+      visit question_path(question)
+    end
+
+    it 'remove answer' do
+      expect(page).to_not have_content 'Delete answer'
+    end
+  end
 end
