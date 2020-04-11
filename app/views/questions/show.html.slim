@@ -1,15 +1,12 @@
 h1 = @question.title
 p = @question.body
 
-.answer
-  - @question.answers.each do |answer|
-    - if answer.persisted?
-      p = answer.body
-      - if current_user&.author_of?(answer)
-        p= link_to 'Delete answer', answer_path(question_id: @question, id: answer), method: :delete
+.answers
+  = render @question.answers
+
 - if current_user
   .answer-errors
-  = form_with model: [@question, @answer], local: true do |f|
+  = form_with model: [@question, @answer] do |f|
     = f.label :body, "Answer Body"
     = f.text_area :body
     = f.submit "Answer the question"
