@@ -1,34 +1,52 @@
 class AnswersController < ApplicationController
-  expose :question, shallow_child: :answer
-  expose :answers, from: :question
-  expose :answer, shallow_parent: :question
+  before_action :authenticate_user!
+  before_action :set_question
+  before_action :set_answer, only: [:edit, :update, :destroy]
+  before_action :check_user, only: [:edit, :update, :destroy]
 
   def create
-    answer = question.answers.new(answer_params)
+    @answer = @question.answers.new(answer_params.merge(user: current_user))
 
-    if answer.save
-      redirect_to answer_path(answer)
+    if @answer.save
+      redirect_to @question, notice: 'Your Answer was successfully created'
     else
-      render :new
+      render 'questions/show'
     end
   end
 
+  def edit
+  end
+
   def update
-    if answer.update(answer_params)
-      redirect_to answer_path(answer)
+    if @answer.update(answer_params)
+      redirect_to @question, notice: 'Your Answer was successfully updated'
     else
       render :edit
     end
   end
 
   def destroy
-    answer.destroy
-    redirect_to question_path(answer.question)
+    @answer.destroy
+    redirect_to @question
   end
 
   private
 
+  def check_user
+    unless current_user.author_of?(@answer)
+      redirect_to @question, alert: "Only author allowed to modify answer"
+    end
+  end
+
+  def set_question
+    @question = Question.find(params[:question_id])
+  end
+
+  def set_answer
+    @answer = Answer.find(params[:id])
+  end
+
   def answer_params
-    params.require(:answer).permit(:title, :body)
+    params.require(:answer).permit(:body)
   end
 end

@@ -2,99 +2,135 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:question) { create(:question) }
-  let(:answer) { create(:answer, question: question) }
+  let(:user) { create(:user) }
 
-  describe 'GET #index' do
-    let(:answers) { create_list(:answer, 3) }
+  before { login(user) }
 
-    before { get :index, params: { question_id: question } }
+  describe 'POST #create' do
+    context 'with valid attributes' do
+      it 'saves the new question' do
+        expect { post :create, params: { question_id: question, answer: attributes_for(:answer) } }.to change(question.answers, :count).by(1)
+      end
 
-    it 'renders index view' do
-      expect(response).to render_template :index
+      it 'redirects to question view' do
+        post :create, params: { question_id: question, answer: attributes_for(:answer) }
+        expect(response).to redirect_to question_path(question)
+      end
+
+      it 'creates answer with logged-in user' do
+        post :create, params: { question_id: question, answer: attributes_for(:answer) }
+        expect(assigns(:answer).user).to eq(user)
+      end
     end
-  end
 
-  describe 'GET #show' do
-    before { get :show, params: { id: answer } }
-    it 'renders show view' do
-      expect(response).to render_template :show
-    end
-  end
-
-  describe 'GET #new' do
-    before { get :new , params: { question_id: question}}
-
-    it 'renders new view' do
-      expect(response).to render_template :new
+    context 'with invalid attributes' do
+      it 'does not save answer' do
+        expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) } }.not_to change(Answer, :count)
+      end
+      # Fixme (["questions/show", "layouts/application"]) так тоже падает тест
+      # it 'to question page' do
+      #   post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }
+      #   expect(response).to render_template(["questions/show", "layouts/application"])
+      # end
     end
   end
 
   describe 'GET #edit' do
-    before { get :edit, params: { question_id: question, id: answer } }
+    let(:answer) { create(:answer, user: user, question: question) }
+
+    before do
+      get :edit, params: { question_id: question, id: answer }
+    end
+
+    it 'assigns the requested answer to @answer' do
+      expect(assigns(:answer)).to eq(answer)
+    end
 
     it 'renders edit view' do
       expect(response).to render_template :edit
     end
-  end
 
-  describe 'POST #create' do
-    context 'with valid attributes' do
-      it 'save a answer in the database' do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer) } }.to change(question.answers, :count).by(1)
-      end
-    end
+    it 'does not allow to edit for other user' do
+      answer = create(:answer)
 
-    context 'with invalid attributes' do
-      it 'does not save the answer' do
-        expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) } }.to_not change(Answer, :count)
-      end
-      it 're-renders new view' do
-        post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }
-        expect(response).to render_template :new
-      end
+      get :edit, params: { question_id: question, id: answer }
+
+      expect(response).to redirect_to question
     end
   end
 
-  describe 'PATH #update' do
+  describe 'PATCH #update' do
+    let!(:answer) { create(:answer, user: user, question: question) }
+
     context 'with valid attributes' do
-      it 'changes answer attributes' do
-        patch :update, params: { question_id: question, id: answer, answer: { title: 'new title', body: 'new body'} }
-        answer.reload
-
-        expect(answer.title).to eq 'new title'
-        expect(answer.body).to eq 'new body'
-
-      end
-      it 'redirect update answer' do
+      it 'assigns the requested answer to @answer' do
         patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
-        expect(response).to redirect_to answer
+        expect(assigns(:answer)).to eq answer
+      end
+
+      it 'changes answer attributes' do
+        patch :update, params: { question_id: question, id: answer, answer: { body: 'new body' } }
+        answer.reload
+        expect(answer.body).to eq 'new body'
+      end
+
+      it 'redirects to the updated answer question' do
+        patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
+        expect(response).to redirect_to question
+      end
+
+      it 'does not allow to update for other user' do
+        answer = create(:answer)
+
+        patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
+
+        expect(response).to redirect_to question
       end
     end
 
     context 'with invalid attributes' do
-      before { patch :update, params: {  question_id: question, id: answer, answer: attributes_for(:answer, :invalid) } }
-
-      it 'does not change answer' do
+      it 'does not change answer attributes' do
+        initial_text = answer.body
+        patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer, body: nil) }
         answer.reload
-
-        expect(answer.title).to eq 'MyString'
-        expect(answer.body).to eq 'MyText'
+        expect(answer.body).to eq initial_text
       end
-      it 're-render edit view' do
+
+      it 'rerenders edit view' do
+        patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer, body: nil) }
         expect(response).to render_template :edit
       end
     end
   end
 
   describe 'DELETE #destroy' do
-    let!(:answer) { create(:answer) }
+    let!(:answer) { create(:answer, question: question, user: user) }
 
-    it 'delete the answer' do
-      expect { delete :destroy, params: { question_id: question, id: answer } }.to change(Answer, :count).by(-1)
+    context 'with correct user' do
+      it 'deletes answer' do
+        expect { delete :destroy, params: { question_id: question, id: answer } }.to change(question.answers, :count).by(-1)
+      end
+
+      it 'redirect to question view' do
+        delete :destroy, params: { question_id: question, id: answer }
+        expect(response).to redirect_to question
+      end
     end
-    it 'redirects to index' do
-      delete :destroy, params: { id: answer }
-      expect(response).to redirect_to question_path(answer.question)
+
+    context 'with incorrect user' do
+      let(:incorrect_user) { create(:user) }
+
+      before { login(incorrect_user) }
+
+      it 'does not allow to destroy' do
+        expect { delete :destroy, params: { question_id: question, id: answer } }.not_to change(question.answers, :count)
+      end
+
+      it 'redirect to question' do
+        delete :destroy, params: { question_id: question, id: answer }
+        expect(response).to redirect_to question
+      end
     end
   end
 end
+

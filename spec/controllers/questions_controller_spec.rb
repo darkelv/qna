@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
-  let(:question) { create(:question) }
+  let(:user) { create(:user) }
+  let(:question) { create(:question, user: user) }
+
+  before { login(user) }
 
   describe 'GET #index' do
     let(:questions) { create_list(:question, 3) }
@@ -28,19 +31,17 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe 'GET #edit' do
-    before { get :edit, params: { id: question } }
-
-    it 'renders edit view' do
-      expect(response).to render_template :edit
-    end
-  end
-
   describe 'POST #create' do
+
     context 'with valid attributes' do
       it 'save a question in the database' do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
       end
+    end
+
+    it 'creates question with logged-in user' do
+      post :create, params: { question: attributes_for(:question) }
+      expect(assigns(:question).user).to eq(user)
     end
 
     context 'with invalid attributes' do
@@ -83,17 +84,54 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to render_template :edit
       end
     end
+
+    context 'with incorrect user' do
+      before do
+        question.user = create(:user)
+        question.save!
+      end
+
+      it 'does not change question attributes' do
+        old_title = question.title
+        patch :update, params: { id: question, question: { title: 'wrong title' } }
+        question.reload
+        expect(question.title).to eq old_title
+      end
+
+      it 'redirects to question' do
+        patch :update, params: { id: question, question: attributes_for(:question) }
+        expect(response).to redirect_to question_path
+      end
+    end
   end
 
   describe 'DELETE #destroy' do
-    let!(:question) { create(:question) }
+    let!(:question) { create(:question, user: user) }
 
-    it 'delete the question' do
-      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+    context 'with correct user' do
+      it 'delete the question' do
+        expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+      end
+
+      it 'redirects to index' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to questions_path
+      end
     end
-    it 'redirects to index' do
-      delete :destroy, params: { id: question }
-      expect(response).to redirect_to questions_path
+
+    context 'with incorrect user' do
+      let(:incorrect_user) { create(:user) }
+
+      before { login(incorrect_user) }
+
+      it 'does not allow to destroy' do
+        expect { delete :destroy, params: { id: question } }.not_to change(Question, :count)
+      end
+
+      it 'redirect to question' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to question
+      end
     end
   end
 end
