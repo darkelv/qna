@@ -23,7 +23,7 @@ feature "Author can remove your answer and can't remove other" do
       visit question_path(question)
     end
     it 'remove answer' do
-      expect(page).to_not have_content 'Delete answer'
+      expect(page).to_not have_link 'Delete answer'
     end
   end
 
@@ -33,7 +33,7 @@ feature "Author can remove your answer and can't remove other" do
     end
 
     it 'remove answer' do
-      expect(page).to_not have_content 'Delete answer'
+      expect(page).to_not have_link 'Delete answer'
     end
   end
 end

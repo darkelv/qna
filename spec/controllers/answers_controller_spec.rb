@@ -27,10 +27,10 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not save answer' do
         expect { post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) } }.not_to change(Answer, :count)
       end
-      # Fixme выходит ошибка которую я не могу понять expecting <"question/show"> but rendering with <["questions/show", "layouts/application"]>
+      # Fixme (["questions/show", "layouts/application"]) так тоже падает тест
       # it 'to question page' do
       #   post :create, params: { question_id: question, answer: attributes_for(:answer, :invalid) }
-      #   expect(response).to render_template("question/show")
+      #   expect(response).to render_template(["questions/show", "layouts/application"])
       # end
     end
   end
