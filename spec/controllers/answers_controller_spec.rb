@@ -59,49 +59,49 @@ RSpec.describe AnswersController, type: :controller do
   #   end
   # end
   #
-  # describe 'PATCH #update' do
-  #   let!(:answer) { create(:answer, user: user, question: question) }
-  #
-  #   context 'with valid attributes' do
-  #     it 'assigns the requested answer to @answer' do
-  #       patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
-  #       expect(assigns(:answer)).to eq answer
-  #     end
-  #
-  #     it 'changes answer attributes' do
-  #       patch :update, params: { question_id: question, id: answer, answer: { body: 'new body' } }
-  #       answer.reload
-  #       expect(answer.body).to eq 'new body'
-  #     end
-  #
-  #     it 'redirects to the updated answer question' do
-  #       patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
-  #       expect(response).to redirect_to question
-  #     end
-  #
-  #     it 'does not allow to update for other user' do
-  #       answer = create(:answer)
-  #
-  #       patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer) }
-  #
-  #       expect(response).to redirect_to question
-  #     end
-  #   end
-  #
-  #   context 'with invalid attributes' do
-  #     it 'does not change answer attributes' do
-  #       initial_text = answer.body
-  #       patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer, body: nil) }
-  #       answer.reload
-  #       expect(answer.body).to eq initial_text
-  #     end
-  #
-  #     it 'rerenders edit view' do
-  #       patch :update, params: { question_id: question, id: answer, answer: attributes_for(:answer, body: nil) }
-  #       expect(response).to render_template :create
-  #     end
-  #   end
-  # end
+  describe 'PATCH #update' do
+    let!(:answer) { create(:answer, user: user, question: question) }
+
+    context 'with valid attributes' do
+      it 'assigns the requested answer to @answer' do
+        patch :update, params: { id: answer, answer: attributes_for(:answer), format: :js }
+        expect(assigns(:answer)).to eq answer
+      end
+
+      it 'changes answer attributes' do
+        patch :update, params: { id: answer, answer: { body: 'new body' }, format: :js }
+        answer.reload
+        expect(answer.body).to eq 'new body'
+      end
+
+      it 'redirects to the updated answer question' do
+        patch :update, params: { id: answer, answer: attributes_for(:answer), format: :js }
+        expect(response).to render_template :update
+      end
+
+      it 'does not allow to update for other user' do
+        answer = create(:answer)
+
+        expect do
+          patch :update, params: { id: answer, answer: attributes_for(:answer), format: :js }
+        end.to_not change(answer, :body)
+      end
+    end
+
+    context 'with invalid attributes' do
+      it 'does not change answer attributes' do
+        initial_text = answer.body
+        patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid),  format: :js }
+        answer.reload
+        expect(answer.body).to eq initial_text
+      end
+
+      it 'rerenders update view' do
+        patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid), format: :js }
+        expect(response).to render_template :update
+      end
+    end
+  end
 
   describe 'DELETE #destroy' do
     let!(:answer) { create(:answer, question: question, user: user) }
