@@ -35,30 +35,43 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
-  # describe 'GET #edit' do
-  #   let(:answer) { create(:answer, user: user, question: question) }
-  #
-  #   before do
-  #     get :edit, params: { question_id: question, id: answer, format: :js }
-  #   end
-  #
-  #   it 'assigns the requested answer to @answer' do
-  #     expect(assigns(:answer)).to eq(answer)
-  #   end
-  #
-  #   it 'renders edit view' do
-  #     expect(response).to render_template :edit
-  #   end
-  #
-  #   it 'does not allow to edit for other user' do
-  #     answer = create(:answer)
-  #
-  #     get :edit, params: { question_id: question, id: answer }
-  #
-  #     expect(response).to redirect_to question
-  #   end
-  # end
-  #
+  describe 'POST #set_best' do
+    let!(:answer) { create(:answer, user: user, question: question) }
+
+    context 'with correct user' do
+      before do
+        login(question.user)
+        post :set_best, params: { id: answer, format: :js }
+      end
+
+      it 'assigns the requested answer to @answer' do
+        expect(assigns(:answer)).to eq answer
+      end
+
+      it 'sets the correct question' do
+        expect(assigns(:question)).to eq answer.question
+      end
+
+      it 'sets the best answer' do
+        answer.reload
+        expect(answer).to be_best
+      end
+    end
+
+    context 'with incorrect user' do
+      before { post :set_best, params: { id: answer, format: :js } }
+
+      it 'does not allow to set_best' do
+        answer.reload
+        expect(answer).to_not be_best
+      end
+
+      it 'returns forbidden' do
+        expect(response).to be_forbidden
+      end
+    end
+  end
+
   describe 'PATCH #update' do
     let!(:answer) { create(:answer, user: user, question: question) }
 
@@ -128,7 +141,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirect to question' do
         delete :destroy, params: { question_id: question, id: answer }
-        expect(response).to redirect_to question
+        expect(response).to be_forbidden
       end
     end
   end

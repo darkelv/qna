@@ -58,7 +58,7 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'PATH #update' do
     context 'with valid attributes' do
       it 'changes question attributes' do
-        patch :update, params: { id: question, question: { title: 'new title', body: 'new body'} }
+        patch :update, params: { id: question, question: { title: 'new title', body: 'new body'}, format: :js }
         question.reload
 
         expect(question.title).to eq 'new title'
@@ -66,22 +66,19 @@ RSpec.describe QuestionsController, type: :controller do
 
       end
       it 'redirect update question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
+        patch :update, params: { id: question, question: attributes_for(:question), format: :js }
         expect(response).to redirect_to question
       end
     end
 
     context 'with invalid attributes' do
-      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) } }
+      before { patch :update, params: { id: question, question: attributes_for(:question, :invalid) }, format: :js }
 
       it 'does not change question' do
         question.reload
 
         expect(question.title).to eq 'MyString'
         expect(question.body).to eq 'MyText'
-      end
-      it 're-render edit view' do
-        expect(response).to render_template :edit
       end
     end
 
@@ -98,9 +95,9 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.title).to eq old_title
       end
 
-      it 'redirects to question' do
+      it 'forbidden to question' do
         patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(response).to redirect_to question_path
+        expect(response).to be_forbidden
       end
     end
   end
@@ -128,9 +125,9 @@ RSpec.describe QuestionsController, type: :controller do
         expect { delete :destroy, params: { id: question } }.not_to change(Question, :count)
       end
 
-      it 'redirect to question' do
+      it 'forbidden to question' do
         delete :destroy, params: { id: question }
-        expect(response).to redirect_to question
+        expect(response).to be_forbidden
       end
     end
   end

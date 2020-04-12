@@ -1,8 +1,26 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_question, except: [:update]
-  before_action :set_answer, only: [:edit, :update, :destroy]
-  before_action :check_user, only: [:edit, :update, :destroy]
+  before_action :set_answer, except: [:create]
+  before_action :set_question
+  before_action :check_answer_author, except: [:create, :set_best]
+  before_action :check_question_author, only: :set_best
+
+  def set_best
+    @answer.make_best
+    @answers = @question.answers
+  end
+
+  def check_question_author
+    unless current_user.author_of?(@question)
+      head(:forbidden)
+    end
+  end
+
+  def check_answer_author
+    unless current_user.author_of?(@answer)
+      head(:forbidden)
+    end
+  end
 
   def create
     @answer = @question.answers.create(answer_params.merge(user: current_user))
@@ -30,7 +48,11 @@ class AnswersController < ApplicationController
   end
 
   def set_question
-    @question = Question.find(params[:question_id])
+    if params[:question_id]
+      @question = Question.find(params[:question_id])
+    else
+      @question = @answer.question
+    end
   end
 
   def set_answer

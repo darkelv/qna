@@ -28,10 +28,12 @@ feature 'User can write an answer to question' do
   scenario 'Unauthenticated user can answer the question', js: true do
     visit question_path(question)
 
-    expect(page).to_not have_content "Answer the question"
+    expect(page).to_not have_link "Answer the question"
   end
 
   scenario 'All user can view answer the question' do
-    visit questions_path(answer.question)
+    visit question_path(question)
+
+    expect(page).to have_content answer.body
   end
 end
