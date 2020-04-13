@@ -56,5 +56,46 @@ feature 'User can edit his answer' do
         expect(page).to_not have_link 'Edit'
       end
     end
+
+    scenario 'add files in edit form', js: true do
+      visit question_path(question)
+
+      within ".answer-#{answer.id}" do
+        click_on 'Edit'
+
+        attach_file 'Files', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+        click_button 'Save'
+      end
+
+      expect(page).to have_link "rails_helper.rb"
+      expect(page).to have_link "spec_helper.rb"
+    end
+
+    scenario 'author delete his answer files' do
+      answer_with_image = create(:answer, :with_files, user: user, question: question)
+
+      visit question_path(answer_with_image.question)
+
+      expect(page).to have_link "Delete #{answer_with_image.files.first.filename.to_s}"
+      expect(page).to have_link "Delete #{answer_with_image.files.last.filename.to_s}"
+
+      click_on "Delete #{answer_with_image.files.first.filename.to_s}"
+
+      expect(page).to_not have_link "Delete #{answer_with_image.files.first.filename.to_s}"
+      expect(page).to have_link "Delete #{answer_with_image.files.last.filename.to_s}"
+
+      click_on "Delete #{answer_with_image.files.last.filename.to_s}"
+
+      expect(page).to_not have_link "Delete #{answer_with_image.files.last.filename.to_s}"
+    end
+
+    scenario 'try to delete files other user answer' do
+      answer_with_image = create(:answer, :with_files, question: question)
+
+      visit question_path(answer_with_image.question)
+
+      expect(page).to_not have_link "Delete #{answer_with_image.files.first.filename.to_s}"
+      expect(page).to_not have_link "Delete #{answer_with_image.files.last.filename.to_s}"
+    end
   end
 end

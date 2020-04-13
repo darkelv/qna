@@ -2,8 +2,13 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_answer, except: [:create]
   before_action :set_question
-  before_action :check_answer_author, except: [:create, :set_best]
+  before_action :check_answer_author, except: [:create, :set_best, :delete_file]
   before_action :check_question_author, only: :set_best
+
+  def delete_file
+    @answer.files.find(params[:file_id]).purge
+    redirect_to @answer.question
+  end
 
   def set_best
     @answer.make_best
@@ -56,10 +61,10 @@ class AnswersController < ApplicationController
   end
 
   def set_answer
-    @answer = Answer.find(params[:id])
+    @answer = Answer.with_attached_files.find(params[:id])
   end
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, files: [])
   end
 end

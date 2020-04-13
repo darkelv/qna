@@ -109,7 +109,7 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.body).to eq initial_text
       end
 
-      it 'rerenders update view' do
+      it 're renders update view' do
         patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid), format: :js }
         expect(response).to render_template :update
       end
