@@ -5,7 +5,7 @@ feature 'User can write an answer to question' do
   given(:question) { create(:question, user: user) }
   given!(:answer) { create(:answer, user: user, question: question) }
 
-  describe 'Authenticated user' do
+  describe 'Authenticated user', js: true do
     background do
       sign_in(user)
       visit question_path(question)
@@ -25,13 +25,15 @@ feature 'User can write an answer to question' do
     end
   end
 
-  scenario 'Unauthenticated user can answer the question' do
+  scenario 'Unauthenticated user can answer the question', js: true do
     visit question_path(question)
 
-    expect(page).to_not have_content "Answer the question"
+    expect(page).to_not have_link "Answer the question"
   end
 
   scenario 'All user can view answer the question' do
-    visit questions_path(answer.question)
+    visit question_path(question)
+
+    expect(page).to have_content answer.body
   end
 end

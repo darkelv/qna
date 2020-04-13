@@ -1,28 +1,37 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_answer, except: [:create]
   before_action :set_question
-  before_action :set_answer, only: [:edit, :update, :destroy]
-  before_action :check_user, only: [:edit, :update, :destroy]
+  before_action :check_answer_author, except: [:create, :set_best]
+  before_action :check_question_author, only: :set_best
+
+  def set_best
+    @answer.make_best
+    @answers = @question.answers
+  end
+
+  def check_question_author
+    unless current_user.author_of?(@question)
+      head(:forbidden)
+    end
+  end
+
+  def check_answer_author
+    unless current_user.author_of?(@answer)
+      head(:forbidden)
+    end
+  end
 
   def create
-    @answer = @question.answers.new(answer_params.merge(user: current_user))
-
-    if @answer.save
-      redirect_to @question, notice: 'Your Answer was successfully created'
-    else
-      render 'questions/show'
-    end
+    @answer = @question.answers.create(answer_params.merge(user: current_user))
   end
 
   def edit
   end
 
   def update
-    if @answer.update(answer_params)
-      redirect_to @question, notice: 'Your Answer was successfully updated'
-    else
-      render :edit
-    end
+    @answer.update(answer_params)
+    @question = @answer.question
   end
 
   def destroy
@@ -34,12 +43,16 @@ class AnswersController < ApplicationController
 
   def check_user
     unless current_user.author_of?(@answer)
-      redirect_to @question, alert: "Only author allowed to modify answer"
+      redirect_to @answer.question, alert: "Only author allowed to modify answer"
     end
   end
 
   def set_question
-    @question = Question.find(params[:question_id])
+    if params[:question_id]
+      @question = Question.find(params[:question_id])
+    else
+      @question = @answer.question
+    end
   end
 
   def set_answer
