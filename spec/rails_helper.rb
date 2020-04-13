@@ -71,10 +71,13 @@ RSpec.configure do |config|
   config.after(:all) do
     FileUtils.rm_rf("#{Rails.root}/tmp/storage")
   end
+<<<<<<< HEAD
 
   FactoryBot::SyntaxRunner.class_eval do
     include ActionDispatch::TestProcess
   end
+=======
+>>>>>>> add_many_files
 end
 
 Shoulda::Matchers.configure do |config|
