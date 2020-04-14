@@ -5,6 +5,8 @@ class Answer < ApplicationRecord
   validates :body, presence: true
   validates :best, uniqueness: { scope: :question }, if: :best
 
+  has_many_attached :files
+
   def make_best
     best_answer = question.answers.find_by(best: true)
 

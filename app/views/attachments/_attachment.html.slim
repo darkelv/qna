@@ -1,0 +1,8 @@
+.attachments
+  - if resource.files.attached?
+    .d-flex.mb-2
+      - resource.files.each do |file|
+        p(data-attachment-id="#{file.id}")
+          => link_to file.filename.to_s, url_for(file)
+          - if current_user&.author_of?(resource)
+            = link_to "Delete #{file.filename.to_s}", attachment_path(file), method: :delete, remote: true

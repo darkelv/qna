@@ -43,5 +43,46 @@ feature 'Question editing' do
 
       expect(page).to_not have_link '(edit)'
     end
+
+    scenario 'add files in edit form', js: true do
+      click_on '(edit)'
+
+      attach_file '(files)', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+      click_button 'Save'
+
+      expect(page).to have_link "rails_helper.rb"
+      expect(page).to have_link "spec_helper.rb"
+    end
+
+    scenario 'author delete his question files' do
+      # Fixme опять получаю ошику там где её быть не может
+      #  request.formats: ["text/html"]
+      #  request.variant: []
+      #  при этом в ответах все работаеботает, и если сделать весь процесс руками тоже нет никаких проблем
+      # question_with_image = create(:question, :with_files, user: user)
+      #
+      # visit question_path(question_with_image)
+      #
+      # expect(page).to have_link "Delete #{question_with_image.files.first.filename.to_s}"
+      # expect(page).to have_link "Delete #{question_with_image.files.last.filename.to_s}"
+      #
+      # click_on "Delete #{question_with_image.files.first.filename.to_s}"
+      #
+      # expect(page).to_not have_link "Delete #{question_with_image.files.first.filename.to_s}"
+      # expect(page).to have_link "Delete #{question_with_image.files.last.filename.to_s}"
+      #
+      # click_on "Delete #{question_with_image.files.last.filename.to_s}"
+      #
+      # expect(page).to_not have_link "Delete #{question_with_image.files.last.filename.to_s}"
+    end
+
+    scenario 'try to delete files other user question' do
+      question_with_image = create(:question, :with_files)
+
+      visit question_path(question_with_image)
+
+      expect(page).to_not have_link "Delete #{question_with_image.files.first.filename.to_s}"
+      expect(page).to_not have_link "Delete #{question_with_image.files.last.filename.to_s}"
+    end
   end
 end

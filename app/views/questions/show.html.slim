@@ -6,8 +6,12 @@
 - if current_user
   .answer-errors
   = form_with model: [@question, @answer], class: 'new-answer' do |f|
-    = f.label :body, "Answer Body"
-    = f.text_area :body
+    p
+      = f.label :body, "Answer Body"
+      = f.text_area :body
+    p
+      = f.label :files
+      = f.file_field :files, multiple: true
     .actions
       = f.submit "Answer the question"
   -if current_user&.author_of?(@question)
