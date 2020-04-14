@@ -1,12 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :set_question, only: [:show, :update, :destroy, :delete_file]
-  before_action :check_user, only: [:update, :destroy, :delete_file]
-
-  def delete_file
-    @question.files.find(params[:file_id]).purge
-    redirect_to @question
-  end
+  before_action :set_question, only: [:show, :update, :destroy]
+  before_action :check_user, only: [:update, :destroy]
 
   def index
     @questions = Question.all

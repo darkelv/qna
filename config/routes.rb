@@ -9,4 +9,6 @@ Rails.application.routes.draw do
       post 'delete_file', on: :member
     end
   end
+
+  resources :attachments, only: :destroy
 end
