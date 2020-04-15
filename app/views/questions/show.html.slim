@@ -1,10 +1,10 @@
 .question = render @question
-
-.links
-  p Links:
-  ul
-    -@question.links.each do |link|
-      li = link_to link.name, link.url
+-if @question&.links.present?
+  .links
+    p Links:
+    ul
+      -@question&.links.each do |link|
+        li = link_to link.name, link.url
 .answers
   = render @question.answers
 
@@ -17,6 +17,15 @@
     p
       = f.label :files
       = f.file_field :files, multiple: true
+    p Links:
+    p
+      = f.fields_for :links do |l|
+        p
+          = l.label :name, 'Link name'
+          = l.text_field :name
+        p
+          = l.label :url
+          = l.text_field :url
     .actions
       = f.submit "Answer the question"
   -if current_user&.author_of?(@question)

@@ -13,7 +13,8 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @answer = @question.answers.build(user: current_user) if current_user
+    @answer = @question.answers.new(user: current_user) if current_user
+    @answer.links.new unless @answer.nil?
   end
 
   def create

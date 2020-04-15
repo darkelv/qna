@@ -1,7 +1,7 @@
 class Question < ApplicationRecord
   has_many :answers, -> { order(best: :desc, created_at: :asc) }, dependent: :destroy
   belongs_to :user
-  has_many :links, dependent: :destroy
+  has_many :links, dependent: :destroy, as: :linkable
 
   has_many_attached :files
 
