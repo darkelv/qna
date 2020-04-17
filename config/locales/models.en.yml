@@ -1,0 +1,6 @@
+en:
+  activerecord:
+      errors:
+        messages:
+          no_image: should be attached
+

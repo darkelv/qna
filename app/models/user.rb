@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   has_many :answers
   has_many :questions
+  has_many :awards
+
 
   def author_of?(model)
     id == model.user_id

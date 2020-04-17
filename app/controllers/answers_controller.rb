@@ -1,66 +1,65 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_answer, except: [:create]
-  before_action :set_question
-  before_action :check_answer_author, except: [:create, :set_best]
+  before_action :check_answer_author, only: [:update, :destroy]
   before_action :check_question_author, only: :set_best
 
   def set_best
-    @answer.make_best
-    @answers = @question.answers
+    answer.make_best
+    @question = answer.question
   end
 
   def check_question_author
-    unless current_user.author_of?(@question)
+    unless current_user.author_of?(answer.question)
       head(:forbidden)
     end
   end
 
   def check_answer_author
-    unless current_user.author_of?(@answer)
+    unless current_user.author_of?(answer)
       head(:forbidden)
     end
   end
 
   def create
-    @answer = @question.answers.create(answer_params.merge(user: current_user))
+    @answer = current_user.answers.new(answer_params)
+    @answer.question = question
+    @answer.save
   end
 
   def edit
   end
 
   def update
-    @answer.update(answer_params)
-    @question = @answer.question
+    answer.update(answer_params)
+    @question = answer.question
   end
 
   def destroy
-    @answer.destroy
-    redirect_to @question
+    answer.destroy
+    redirect_to question
   end
 
   private
 
+  helper_method :answer, :question
+
   def check_user
-    unless current_user.author_of?(@answer)
-      redirect_to @answer.question, alert: "Only author allowed to modify answer"
+    unless current_user.author_of?(answer)
+      redirect_to answer.question, alert: "Only author allowed to modify answer"
     end
   end
 
-  def set_question
-    if params[:question_id]
-      @question = Question.find(params[:question_id])
-    else
-      @question = @answer.question
-    end
+  def answer
+    @answer ||= params[:id] ? Answer.with_attached_files.find(params[:id]) : Answer.new
   end
 
-  def set_answer
-    @answer = Answer.with_attached_files.find(params[:id])
+  def question
+    @question ||= Question.with_attached_files.find(params[:question_id])
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [],
-                                   links_attributes: [:name, :url])
+    params.require(:answer).permit(
+      :body, files: [], links_attributes: [:id, :name, :url, :_destroy]
+    )
   end
 end

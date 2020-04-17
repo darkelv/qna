@@ -37,4 +37,26 @@ RSpec.describe Answer, type: :model do
       expect(answer3).to_not be_best
     end
   end
+
+  context 'Author can pick one answer to his question as the best' do
+    let(:user1) { create(:user_with_questions, questions_count: 2) }
+    let(:user2) { create(:user) }
+    let(:question_without_award) { user1.questions.last }
+    let!(:answer_with_award) { create(:answer, question: question, user: user2) }
+    let!(:answer_without_award) { create(:answer, question: question_without_award, user: user2) }
+    let!(:award) { create(:award, :with_image, question: question) }
+    let(:question) { user1.questions.first }
+
+    it "Best answer's author get award, attached to question" do
+      expect(user2.awards).to be_empty
+
+      answer_with_award.make_best
+      expect(user2.awards.first).to eq award
+    end
+
+    it "Best answer's author don't get award, because question hasn't got it" do
+      answer_without_award.make_best
+      expect(user2.awards).to be_empty
+    end
+  end
 end
