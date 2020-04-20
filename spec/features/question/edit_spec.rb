@@ -54,26 +54,22 @@ feature 'Question editing' do
       expect(page).to have_link "spec_helper.rb"
     end
 
-    scenario 'author delete his question files' do
-      # Fixme опять получаю ошику там где её быть не может
-      #  request.formats: ["text/html"]
-      #  request.variant: []
-      #  при этом в ответах все работаеботает, и если сделать весь процесс руками тоже нет никаких проблем
-      # question_with_image = create(:question, :with_files, user: user)
-      #
-      # visit question_path(question_with_image)
-      #
-      # expect(page).to have_link "Delete #{question_with_image.files.first.filename.to_s}"
-      # expect(page).to have_link "Delete #{question_with_image.files.last.filename.to_s}"
-      #
-      # click_on "Delete #{question_with_image.files.first.filename.to_s}"
-      #
-      # expect(page).to_not have_link "Delete #{question_with_image.files.first.filename.to_s}"
-      # expect(page).to have_link "Delete #{question_with_image.files.last.filename.to_s}"
-      #
-      # click_on "Delete #{question_with_image.files.last.filename.to_s}"
-      #
-      # expect(page).to_not have_link "Delete #{question_with_image.files.last.filename.to_s}"
+    scenario 'author delete his question files', js: true do
+      question_with_image = create(:question, :with_files, user: user)
+
+      visit question_path(question_with_image)
+
+      expect(page).to have_link "Delete #{question_with_image.files.first.filename.to_s}"
+      expect(page).to have_link "Delete #{question_with_image.files.last.filename.to_s}"
+
+      click_on "Delete #{question_with_image.files.first.filename.to_s}"
+
+      expect(page).to_not have_link "Delete #{question_with_image.files.first.filename.to_s}"
+      expect(page).to have_link "Delete #{question_with_image.files.last.filename.to_s}"
+
+      click_on "Delete #{question_with_image.files.last.filename.to_s}"
+
+      expect(page).to_not have_link "Delete #{question_with_image.files.last.filename.to_s}"
     end
 
     scenario 'try to delete files other user question' do

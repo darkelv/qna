@@ -1,22 +1,29 @@
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
-  it { should have_many :questions }
-  it { should have_many :answers }
-  it { should validate_presence_of :email }
-  it { should validate_presence_of :password }
+describe User, type: :model do
+  describe 'Association' do
+    it { should have_many(:questions) }
+    it { should have_many(:answers) }
+    it { should have_many(:awards) }
+  end
 
-  describe 'author_of?' do
-    let(:question) { create(:question) }
-    let(:author) { create(:user) }
-    let(:author_question) { create(:question, user: author) }
+  describe 'Validation' do
+    it { should validate_presence_of :email }
+    it { should validate_presence_of :password }
+  end
 
-    it 'returns true for an author of object' do
-      expect(author).to be_author_of(author_question)
-    end
+  describe 'Methods' do
+    describe "Is user an resource's author" do
+      let(:user1) { create(:user_with_questions, questions_count: 1) }
+      let(:user2) { create(:user_with_questions, questions_count: 1) }
 
-    it 'returns false for non-author of object' do
-      expect(author).to_not be_author_of(question)
+      it 'Is author of question' do
+        expect(user1).to be_author_of(user1.questions.first)
+      end
+
+      it 'Is no author of question' do
+        expect(user1).not_to be_author_of(user2.questions.first)
+      end
     end
   end
 end

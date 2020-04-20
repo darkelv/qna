@@ -1,0 +1,7 @@
+li.list-group-item
+  .row
+    .col-2.text-center.align-top
+      p= image_tag url_for(award.image), height: '20', width: '20'
+    .col-10.d-flex
+      = award.title
+      .ml-3= link_to award.question.title, question_path(award.question)

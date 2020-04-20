@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'User can write an answer to question' do
   given(:user) { create(:user) }
-  given(:question) { create(:question, user: user) }
+  given!(:question) { create(:question, user: user) }
   given!(:answer) { create(:answer, user: user, question: question) }
 
   describe 'Authenticated user', js: true do

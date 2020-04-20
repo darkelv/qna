@@ -1,22 +1,30 @@
 - if answer.persisted?
   div[class="answer-#{answer.id}"]
-
     p = answer.body
-    = render 'attachments/attachment', resource: answer
 
-    - if current_user&.author_of?(@question) && !answer.best?
+    section.answer-files
+      = render 'attachments/attachment', resource: answer
+
+    section.answer-links
+      = render 'links/index', resourse: answer
+
+    - if current_user&.author_of?(question) && !answer.best?
       p = link_to 'Set as best answer', set_best_answer_path(answer), class: 'set-best-answer-link', remote: false, method: :post
 
     - if current_user&.author_of?(answer)
       p= link_to "Edit", '#', class: 'edit-answer-link', data: { answer_id: answer.id}
-
       = form_with model: answer, class: :hidden, html: { id: "edit-answer-#{answer.id}" } do |f|
         p
           = f.label :body, "Your answer"
           = f.text_area :body
+          = f.fields_for :links do |l|
+            = render 'links/fields', f: l
+        .links
+          p
+            = link_to_add_association "Add_link", f, :links, partial: 'links/fields'
         p
           = f.label :files
           = f.file_field :files, multiple: true
         = f.submit "Save"
 
-      p= link_to 'Delete answer', answer_path(question_id: @question, id: answer), method: :delete
+      p= link_to 'Delete answer', answer_path(question_id: answer.question, id: answer), method: :delete
