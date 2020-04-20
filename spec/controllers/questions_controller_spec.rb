@@ -147,4 +147,62 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
   end
+
+  describe "POST #vote" do
+    let(:user1) { create(:user) }
+    before { login(user1) }
+
+    it 'assigns vote' do
+      post :vote_up, params: { id: question }
+      expect(assigns(:vote)).to be_instance_of(Vote)
+    end
+
+    it 'votes up' do
+      post :vote_up, params: { id: question, format: :js }
+      expect(question.rating).to eq 1
+    end
+
+    it 'votes down' do
+      post :vote_down, params: { id: question, format: :js }
+      expect(question.rating).to eq -1
+    end
+
+    it 'returns correct json' do
+      post :vote_up, params: { id: question, format: :js }
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response['id']).to eq question.id
+    end
+
+    it 'no double-voting' do
+      create(:vote, user: user1, votable_id: question.id, votable_type: "Question")
+      post :vote_up, params: { id: question, format: :js }
+      expect(response).to be_forbidden
+    end
+
+    it 'author can not vote for his question' do
+      question.user = user1
+      question.save!
+      post :vote_up, params: { id: question, format: :js }
+      expect(response).to be_forbidden
+    end
+  end
+
+  describe "DELETE #destroy_vote" do
+    let(:user1) { create(:user) }
+    let!(:vote) { create(:vote, user: user1, votable_id: question.id, votable_type: "Question") }
+
+    before { login(user1) }
+
+    it "destroys the vote" do
+      expect { delete :destroy_vote, params: { id: question } }.to change(Vote, :count).by(-1)
+    end
+
+    it "returns correct json" do
+      delete :destroy_vote, params: { id: question }
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response['id']).to eq question.id
+    end
+  end
 end

@@ -4,4 +4,9 @@ $(document).on('turbolinks:load',function() {
         $(this).hide();
         $('form#edit-question-form').removeClass('hidden');
     });
+
+    $(".question .vote").bind('ajax:success', function(e){
+        var response = e.detail[0];
+        $(".question .vote").html(response.output);
+    });
 });
