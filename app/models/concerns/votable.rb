@@ -10,7 +10,7 @@ module Votable
   end
 
   def vote_up user
-    votes.create(user: user)
+    votes.create(voice: 1, user: user)
   end
 
   def vote_down user
