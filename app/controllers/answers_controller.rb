@@ -3,6 +3,8 @@ class AnswersController < ApplicationController
   before_action :check_answer_author, only: [:update, :destroy]
   before_action :check_question_author, only: :set_best
 
+  include Voted
+
   def set_best
     answer.make_best
     @question = answer.question

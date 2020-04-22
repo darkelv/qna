@@ -1,5 +1,8 @@
 - if answer.persisted?
   div[class="answer-#{answer.id}"]
+    - unless current_user&.author_of?(answer)
+      p.vote
+        =render 'votes/block', data: answer
     p = answer.body
 
     section.answer-files
