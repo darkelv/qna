@@ -85,6 +85,7 @@ GEM
     cocoon (1.2.14)
     coderay (1.1.2)
     concurrent-ruby (1.1.6)
+    configure (0.3.0)
     crass (1.0.6)
     debug_inspector (0.0.3)
     devise (4.7.1)
@@ -112,6 +113,8 @@ GEM
     ffi (1.12.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    gom (0.5.2)
+      configure (>= 0.3.0)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     i18n-debug (1.2.0)
@@ -249,6 +252,9 @@ GEM
       rubyzip (>= 1.2.2)
     shoulda-matchers (4.3.0)
       activesupport (>= 4.2.0)
+    simple_form (5.0.2)
+      actionpack (>= 5.0)
+      activemodel (>= 5.0)
     slim (4.0.1)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
@@ -313,6 +319,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
+  gom
   i18n-debug (~> 1.2)
   jbuilder (~> 2.7)
   launchy
@@ -332,6 +339,7 @@ DEPENDENCIES
   sass-rails (>= 6)
   selenium-webdriver
   shoulda-matchers
+  simple_form
   slim-rails
   spring
   spring-watcher-listen (~> 2.0.0)
