@@ -1,5 +1,6 @@
--@questions.each do |question|
-  p => link_to question.title, question_path(question)
-  p = question.body
+.row.pt-2.justify-content-center
+  .col-8
+    ul.list-group.list-group-flush.questions
+      = render @questions
 
-p= link_to 'Ask question', new_question_path
+  p= link_to 'Ask question', new_question_path

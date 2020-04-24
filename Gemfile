@@ -32,7 +32,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'slim-rails'
 gem 'devise'
 gem 'bootstrap'
-gem 'gom'
+gem 'gon'
 gem 'simple_form'
 
 group :development, :test do
