@@ -5,6 +5,8 @@ class AnswersController < ApplicationController
 
   include Voted
 
+  after_action :publish_answer, only: :create
+
   def set_best
     answer.make_best
     @question = answer.question
@@ -44,6 +46,15 @@ class AnswersController < ApplicationController
   private
 
   helper_method :answer, :question
+
+  def publish_answer
+    return if answer.errors.any?
+
+    ActionCable.server.broadcast(
+      "question_#{question.id}_answers",
+      answer: answer
+    )
+  end
 
   def check_user
     unless current_user.author_of?(answer)
