@@ -9,6 +9,15 @@ section.question-files
 section.question-links
   = render 'links/index', resourse: question
 
+section.question-comments
+  - if question.comments.any?
+    p= "Comments"
+    = render question.comments
+
+  - if user_signed_in?
+    .question-comment-form
+      = render 'comments/form', resource: Comment.new, url: question_comments_path(question)
+
 section.awards
   - if question.award.present?
     .question-image

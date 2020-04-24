@@ -8,6 +8,8 @@ class Answer < ApplicationRecord
   validates :body, presence: true
   validates :best, uniqueness: { scope: :question }, if: :best
 
+  has_many :comments, as: :commentable, dependent: :destroy
+
   has_many_attached :files
 
   def make_best

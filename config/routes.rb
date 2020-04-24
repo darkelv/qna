@@ -8,9 +8,13 @@ Rails.application.routes.draw do
     delete 'destroy_vote', on: :member
   end
 
-  resources :questions, concerns: :votable do
+  concern :commentable do
+    resources :comments, only: :create, shallow: true
+  end
+
+  resources :questions, concerns: [:votable, :commentable] do
     post 'delete_file', on: :member
-    resources :answers, concerns: :votable, shallow: true do
+    resources :answers, only: %i[create destroy update], concerns: %i[votable commentable], shallow: true do
       post 'set_best', on: :member
       post 'delete_file', on: :member
     end
