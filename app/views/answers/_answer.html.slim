@@ -5,6 +5,15 @@
         =render 'votes/block', data: answer
     p = answer.body
 
+    section.answer-comments
+      - if answer.comments.any?
+        p= "Comments"
+        = render answer.comments
+
+      - if user_signed_in?
+        .answer-comment-form
+          = render 'comments/form', resource: Comment.new, url: answer_comments_path(answer)
+
     section.answer-files
       = render 'attachments/attachment', resource: answer
 

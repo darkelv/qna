@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Question, type: :model do
   it_behaves_like "votable"
+  it_behaves_like 'commentable'
 
   describe 'Association' do
     it { should have_many(:answers).dependent(:destroy) }

@@ -1,0 +1,53 @@
+- unless current_user&.author_of?(question)
+  p.vote
+    = render 'votes/block', data: question
+h1 = question.title
+p = question.body
+section.question-files
+  = render 'attachments/attachment', resource: question
+
+section.question-links
+  = render 'links/index', resourse: question
+
+section.question-comments
+  - if question.comments.any?
+    p= "Comments"
+    = render question.comments
+
+  - if user_signed_in?
+    .question-comment-form
+      = render 'comments/form', resource: Comment.new, url: question_comments_path(question)
+
+section.awards
+  - if question.award.present?
+    .question-image
+      = image_tag url_for(question.award.image), title: question.award.title, height: '30', width: '30'
+section.question-form-node
+  - if current_user && current_user.author_of?(question)
+    p = link_to '(edit)', '#', class: 'edit-question-link'
+    p  = form_with model: question, class: :hidden, html: { id: 'edit-question-form' }  do |f|
+      p
+        = f.label "Title"
+        = f.text_field :title
+      p
+        = f.label "Body"
+        = f.text_area :body
+      p
+        = f.label :files, '(files)'
+        = f.file_field :files, multiple: true
+        = f.fields_for :links do |l|
+          = render 'links/fields', f: l
+        = f.fields_for :award do |a|
+          p
+            = a.label :title, 'Award name'
+            = a.text_field :title
+          p
+            = a.label :image
+            = a.file_field :image
+            = link_to_remove_association "Remove award", f
+      .links
+        p
+          = link_to_add_association "Add_link", f, :links, partial: 'links/fields'
+      p
+        = f.submit 'Save'
+    p = link_to '(delete)', question, id: 'delete-question-link', method: :delete

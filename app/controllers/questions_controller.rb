@@ -4,6 +4,8 @@ class QuestionsController < ApplicationController
 
   include Voted
 
+  after_action :publish_question, only: [:create]
+
   def index
     @questions = Question.all
   end
@@ -19,6 +21,8 @@ class QuestionsController < ApplicationController
       @answer = Answer.new(user: current_user)
       @answer.links.new
     end
+    gon.question_id = question.id
+    gon.question_author_id = question.user_id
   end
 
   def create
@@ -46,6 +50,18 @@ class QuestionsController < ApplicationController
   end
 
   private
+
+  def publish_question
+    return if question.errors.any?
+
+    ActionCable.server.broadcast(
+      'questions',
+      ApplicationController.render(
+        partial: 'questions/question',
+        locals: { question: question }
+      )
+    )
+  end
 
   helper_method :question
 

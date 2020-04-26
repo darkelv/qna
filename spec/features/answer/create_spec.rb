@@ -34,6 +34,31 @@ feature 'User can write an answer to question' do
       expect(page).to have_link "rails_helper.rb"
       expect(page).to have_link "spec_helper.rb"
     end
+    describe 'mulitple sessions', js: true do
+      scenario "answer appears on another user's page" do
+        Capybara.using_session('user') do
+          sign_in(user)
+          visit question_path(question)
+        end
+
+        Capybara.using_session('guest') do
+          visit question_path(question)
+        end
+
+        Capybara.using_session('user') do
+          fill_in "Answer Body", with: 'answer text'
+          click_on "Answer the question"
+
+          within '.answers' do
+            expect(page).to have_content 'answer text'
+          end
+        end
+
+        Capybara.using_session('guest') do
+          expect(page).to have_content 'answer text'
+        end
+      end
+    end
   end
 
   scenario 'Unauthenticated user can answer the question', js: true do
