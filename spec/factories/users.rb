@@ -16,5 +16,15 @@ FactoryBot.define do
         create_list(:question, evaluator.questions_count, user: user)
       end
     end
+
+    factory :user_with_authorizations do
+      transient do
+        authorizations_count { 1 }
+      end
+
+      after(:create) do |user, evaluator|
+        create_list(:authorization, evaluator.authorizations_count, user: user)
+      end
+    end
   end
 end

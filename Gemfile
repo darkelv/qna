@@ -34,6 +34,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-github'
+gem 'omniauth-facebook'
 
 #views
 gem 'bootstrap'
@@ -57,6 +58,7 @@ group :development, :test do
   gem 'awesome_print' # nice inspection in console
   gem 'dotenv-rails'
   gem 'faker'
+  gem "letter_opener"
 end
 
 group :development do
@@ -78,6 +80,8 @@ group :test do
   gem 'rails-controller-testing'
   gem 'launchy'
   gem 'i18n-debug', '~> 1.2'
+  gem 'capybara-email'
+
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

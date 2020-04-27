@@ -64,7 +64,6 @@ describe User, type: :model do
         expect(service).to receive(:call)
         User.find_for_oauth(auth)
       end
-
     end
   end
 end
