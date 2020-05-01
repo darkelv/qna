@@ -121,11 +121,11 @@ RSpec.describe AnswersController, type: :controller do
 
     context 'with correct user' do
       it 'deletes answer' do
-        expect { delete :destroy, params: { question_id: question, id: answer } }.to change(question.answers, :count).by(-1)
+        expect { delete :destroy, params: { id: answer } }.to change(question.answers, :count).by(-1)
       end
 
       it 'redirect to question view' do
-        delete :destroy, params: { question_id: question, id: answer }
+        delete :destroy, params: { id: answer }
         expect(response).to redirect_to question
       end
     end
@@ -136,11 +136,11 @@ RSpec.describe AnswersController, type: :controller do
       before { login(incorrect_user) }
 
       it 'does not allow to destroy' do
-        expect { delete :destroy, params: { question_id: question, id: answer } }.not_to change(question.answers, :count)
+        expect { delete :destroy, params: { id: answer } }.not_to change(question.answers, :count)
       end
 
-      it 'redirect to question' do
-        delete :destroy, params: { question_id: question, id: answer }
+      it 'returns forbidden' do
+        delete :destroy, params: { id: answer }
         expect(response).to be_forbidden
       end
     end

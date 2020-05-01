@@ -20,10 +20,10 @@
     section.answer-links
       = render 'links/index', resourse: answer
 
-    - if current_user&.author_of?(question) && !answer.best?
+    - if can?(:set_best, answer) && !answer.best?
       p = link_to 'Set as best answer', set_best_answer_path(answer), class: 'set-best-answer-link', remote: false, method: :post
 
-    - if current_user&.author_of?(answer)
+    - if can?(:edit, answer)
       p= link_to "Edit", '#', class: 'edit-answer-link', data: { answer_id: answer.id}
       = form_with model: answer, class: :hidden, html: { id: "edit-answer-#{answer.id}" } do |f|
         p

@@ -2,8 +2,8 @@ module Voted
   extend ActiveSupport::Concern
 
   included do
-    before_action :load_resource, only: [:vote_up, :vote_down, :destroy_vote]
-    before_action :check_author_or_voted, only: [:vote_up, :vote_down]
+    before_action :load_resource, only: [:vote_up, :vote_down, :destroy_vote, :check_voted]
+    before_action :check_voted, only: [:vote_up, :vote_down]
   end
 
   def vote_up
@@ -36,7 +36,7 @@ module Voted
     @votable = model_klass.find(params[:id])
   end
 
-  def check_author_or_voted
-    head(:forbidden) if current_user.author_of?(@votable) || current_user.voted_for?(@votable)
+  def check_voted
+    head(:forbidden) if current_user.voted_for?(@votable)
   end
 end

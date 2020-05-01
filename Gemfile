@@ -36,6 +36,9 @@ gem 'omniauth'
 gem 'omniauth-github'
 gem 'omniauth-facebook'
 
+#authorization
+gem 'cancancan'
+
 #views
 gem 'bootstrap'
 gem 'gon'
