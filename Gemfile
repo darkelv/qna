@@ -29,11 +29,18 @@ gem "octokit"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
-gem 'slim-rails'
+
+#auth
 gem 'devise'
+gem 'omniauth'
+gem 'omniauth-github'
+gem 'omniauth-facebook'
+
+#views
 gem 'bootstrap'
 gem 'gon'
 gem 'simple_form'
+gem 'slim-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -51,6 +58,7 @@ group :development, :test do
   gem 'awesome_print' # nice inspection in console
   gem 'dotenv-rails'
   gem 'faker'
+  gem "letter_opener"
 end
 
 group :development do
@@ -72,6 +80,8 @@ group :test do
   gem 'rails-controller-testing'
   gem 'launchy'
   gem 'i18n-debug', '~> 1.2'
+  gem 'capybara-email'
+
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
