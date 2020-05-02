@@ -1,27 +1,26 @@
 <% if @comment.commentable_type == 'Question' %>
-var commentsQuestionFormNode = document.querySelector('.question-comment-form');
+  var commentsQuestionFormNode = document.querySelector('.question-comment-form');
 
-<% if @comment.persisted? %>
-var commentsNode = document.querySelector('.question-comments');
-commentsNode.insertAdjacentHTML('beforeEnd', '<%= j render @comment %>');
+  <% if @comment.persisted? %>
+    var commentsNode = document.querySelector('.question-comments');
+    commentsNode.insertAdjacentHTML('beforeEnd', '<%= j render @comment %>');
 
-commentsQuestionFormNode.innerHTML = '<%= j render 'comments/form', resource: Comment.new, url: question_comments_path(@comment.commentable) %>';
-<% else %>
-commentsQuestionFormNode.innerHTML = '<%= j render 'comments/form', resource: @comment, url: question_comments_path(@comment.commentable) %>';
-<% end %>
-
+    commentsQuestionFormNode.innerHTML = '<%= j render 'comments/form', resource: Comment.new, url: question_comments_path(@comment.commentable) %>';
+  <% else %>
+    commentsQuestionFormNode.innerHTML = '<%= j render 'comments/form', resource: @comment, url: question_comments_path(@comment.commentable) %>';
+  <% end %>
 <% end %>
 
 <% if @comment.commentable_type == 'Answer' %>
-var answerNode = document.querySelector('.answer-<%= @comment.commentable.id %>');
-var commentsAnswerFormNode = answerNode.querySelector('.answer-comment-form');
+  var answerNode = document.querySelector('.answer-<%= @comment.commentable.id %>');
+  var commentsAnswerFormNode = answerNode.querySelector('.answer-comment-form');
 
-<% if @comment.persisted? %>
-var commentsNode = answerNode.querySelector('.answer-comments');
-commentsNode.insertAdjacentHTML('beforeEnd', '<%= j render @comment %>');
+  <% if @comment.persisted? %>
+    var commentsNode = answerNode.querySelector('.answer-comments');
+    commentsNode.insertAdjacentHTML('beforeEnd', '<%= j render @comment %>');
 
-commentsAnswerFormNode.innerHTML = '<%= j render 'comments/form', resource: Comment.new, url: answer_comments_path(@comment.commentable) %>';
-<% else %>
-commentsAnswerFormNode.innerHTML = '<%= j render 'comments/form', resource: @comment, url: answer_comments_path(@comment.commentable) %>';
-<% end %>
+    commentsAnswerFormNode.innerHTML = '<%= j render 'comments/form', resource: Comment.new, url: answer_comments_path(@comment.commentable) %>';
+  <% else %>
+    commentsAnswerFormNode.innerHTML = '<%= j render 'comments/form', resource: @comment, url: answer_comments_path(@comment.commentable) %>';
+  <% end %>
 <% end %>

@@ -1,8 +1,10 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :check_user, only: [:update, :destroy]
+  before_action :set_question, only: [:show, :update, :destroy]
 
   include Voted
+
+  authorize_resource
 
   after_action :publish_question, only: [:create]
 
@@ -18,11 +20,11 @@ class QuestionsController < ApplicationController
 
   def show
     if current_user.present?
-      @answer = Answer.new(user: current_user)
+      @answer = @question.answers.new(user: current_user)
       @answer.links.new
     end
-    gon.question_id = question.id
-    gon.question_author_id = question.user_id
+    gon.question_id = @question.id
+    gon.question_author_id = @question.user_id
   end
 
   def create
@@ -35,38 +37,30 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    question.update(question_params)
+    @question.update(question_params)
   end
 
   def destroy
-    question.destroy
+    @question.destroy
     redirect_to questions_path
-  end
-
-  def check_user
-    unless current_user.author_of?(question)
-      head(:forbidden)
-    end
   end
 
   private
 
   def publish_question
-    return if question.errors.any?
+    return if @question.errors.any?
 
     ActionCable.server.broadcast(
       'questions',
       ApplicationController.render(
         partial: 'questions/question',
-        locals: { question: question }
+        locals: { question: @question }
       )
     )
   end
 
-  helper_method :question
-
-  def question
-    @question ||= params[:id] ? Question.with_attached_files.find(params[:id]) : Question.new
+  def set_question
+    @question = Question.with_attached_files.find(params[:id])
   end
 
 
