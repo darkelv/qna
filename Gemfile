@@ -88,7 +88,6 @@ group :test do
   gem 'launchy'
   gem 'i18n-debug', '~> 1.2'
   gem 'capybara-email'
-
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
