@@ -9,7 +9,7 @@ class QuestionsController < ApplicationController
   after_action :publish_question, only: [:create]
 
   def index
-    @questions = Question.all
+    @questions = Question.with_attached_files.all
   end
 
   def new
