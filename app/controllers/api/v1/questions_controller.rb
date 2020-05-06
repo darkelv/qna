@@ -1,7 +1,7 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-  authorize_resource
-
   before_action :set_question, only: %i[show update destroy]
+
+  authorize_resource
 
   def index
     @questions = Question.with_attached_files.all
