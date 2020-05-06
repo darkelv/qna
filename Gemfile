@@ -29,6 +29,10 @@ gem "octokit"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
+#api
+gem 'doorkeeper'
+gem 'active_model_serializers', '~> 0.10'
+gem 'oj'
 
 #auth
 gem 'devise'
@@ -84,7 +88,6 @@ group :test do
   gem 'launchy'
   gem 'i18n-debug', '~> 1.2'
   gem 'capybara-email'
-
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

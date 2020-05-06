@@ -12,6 +12,5 @@ class ApplicationController < ActionController::Base
       format.html { redirect_to root_url, alert: exception.message, status: 403}
     end
   end
-
   check_authorization unless: :devise_controller?
 end
