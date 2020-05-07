@@ -32,6 +32,8 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 #active_job
 gem 'sidekiq'
+gem 'sinatra', require: false
+gem 'whenever', require: false
 
 #api
 gem 'doorkeeper'
