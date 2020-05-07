@@ -28,6 +28,7 @@ describe Ability do
     let(:answer1) { create(:answer, :with_files, user: user) }
     let(:answer2) { create(:answer, :with_files, user: other_user) }
 
+
     it { should_not be_able_to :manage, :all }
     it { should be_able_to :read, :all }
 
@@ -40,6 +41,10 @@ describe Ability do
     it { should_not be_able_to %i[update destroy], build(:answer, user: other_user) }
 
     it { should be_able_to :create, Comment }
+    it { should be_able_to :create, build(:subscription, user: user) }
+    it { should be_able_to :destroy, build(:subscription, user: user) }
+    it { should_not be_able_to :destroy, build(:subscription, user: other_user) }
+
 
     it { should be_able_to %i[vote_up vote_down destroy_vote], build(:question, user: other_user) }
     it { should_not be_able_to %i[vote_up vote_down destroy_vote], build(:question, user: user) }

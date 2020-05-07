@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :set_question, only: [:show, :update, :destroy]
+  before_action :set_subscription, only: [:show, :update]
 
   include Voted
 
@@ -61,6 +62,10 @@ class QuestionsController < ApplicationController
 
   def set_question
     @question = Question.with_attached_files.find(params[:id])
+  end
+
+  def set_subscription
+    @subscription = @question.subscriptions.find_by(user: current_user)
   end
 
 

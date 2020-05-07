@@ -10,6 +10,8 @@ class User < ApplicationRecord
   has_many :awards
   has_many :votes
   has_many :authorizations, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
+  has_many :subscribed_questions, through: :subscriptions, source: :question
 
   def author_of?(model)
     id == model.user_id

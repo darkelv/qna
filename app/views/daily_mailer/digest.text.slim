@@ -1,3 +1,8 @@
-' DailyDigest#digest
-= "\r\n" * 2
-' #{@greeting + ", find me in app/views/daily_digest_mailer/digest.text.slim"}
+Daily digest
+
+Hi! Here are the questions, that has been created last day:
+
+<% @questions.each do |question| %>
+  <%= question.title %>
+  <%= question_url(question) %>
+<% end %>

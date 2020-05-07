@@ -8,6 +8,17 @@ describe Question, type: :model do
     it { should have_many(:answers).dependent(:destroy) }
     it { should belong_to(:user) }
     it { should have_one(:award).dependent(:destroy) }
+    it { should have_many(:subscriptions).dependent(:destroy) }
+    it { should have_many(:subscribed_users).through(:subscriptions).source(:user) }
+  end
+
+  describe 'Scopes' do
+    let!(:question) { create(:question) }
+    let!(:questions) { create_list(:question, 2, created_at: Date.yesterday) }
+
+    it '.created_the_day_before' do
+      expect(Question.created_prev_day).to eq questions
+    end
   end
 
   describe 'Validation' do

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       post 'set_best', on: :member
       post 'delete_file', on: :member
     end
+    resources :subscriptions, only: %i[create destroy], shallow: true
   end
 
   namespace :api do
