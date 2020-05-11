@@ -34,7 +34,7 @@ class Ability
     can :create, Subscription
 
     can :destroy, Subscription do |sub|
-      sub.user_id == user.id
+      user.author_of?(sub)
     end
 
     can :set_best, Answer, question: { user_id: user.id }
