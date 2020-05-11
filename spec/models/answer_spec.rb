@@ -16,6 +16,15 @@ RSpec.describe Answer, type: :model do
     expect(Answer.new.files).to be_an_instance_of(ActiveStorage::Attached::Many)
   end
 
+  describe '#notify_user' do
+    let(:answer) { build(:answer) }
+
+    it 'calls NotificationJob' do
+      expect(NotificationJob).to receive(:perform_later).with(answer)
+      answer.save!
+    end
+  end
+
   context "best answer" do
     let!(:question) { create(:question) }
 

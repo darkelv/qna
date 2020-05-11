@@ -29,6 +29,12 @@ gem "octokit"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
+
+#active_job
+gem 'sidekiq'
+gem 'sinatra', require: false
+gem 'whenever', require: false
+
 #api
 gem 'doorkeeper'
 gem 'active_model_serializers', '~> 0.10'

@@ -31,6 +31,12 @@ class Ability
       !user.author_of?(item)
     end
 
+    can :create, Subscription
+
+    can :destroy, Subscription do |sub|
+      user.author_of?(sub)
+    end
+
     can :set_best, Answer, question: { user_id: user.id }
     can :destroy, ActiveStorage::Attachment, record: { user_id: user.id }
     can :destroy, Link, linkable: { user_id: user.id }

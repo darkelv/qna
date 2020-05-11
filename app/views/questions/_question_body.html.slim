@@ -22,6 +22,9 @@ section.awards
   - if @question.award.present?
     .question-image
       = image_tag url_for(@question.award.image), title: @question.award.title, height: '30', width: '30'
+section.question-subscription
+  - if current_user.present?
+    = render 'subscriptions/subscription', resource: question
 section.question-form-node
   - if can?(:edit, @question)
     p = link_to '(edit)', '#', class: 'edit-question-link'

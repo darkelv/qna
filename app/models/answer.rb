@@ -12,6 +12,8 @@ class Answer < ApplicationRecord
 
   has_many_attached :files
 
+  after_create :send_answer_notify
+
   def make_best
     best_answer = question.answers.find_by(best: true)
 
@@ -20,5 +22,11 @@ class Answer < ApplicationRecord
       update!(best: true)
       question.award&.update!(user: user)
     end
+  end
+
+  private
+
+  def send_answer_notify
+    NotificationJob.perform_later(self)
   end
 end

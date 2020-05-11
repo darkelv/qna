@@ -1,0 +1,11 @@
+New answer notification
+Hi! The subscribed question got a new answer
+
+Question
+<%= question_url(@question) %>
+
+<%= @question.title %>
+<%= @question.body.truncate(200) %>
+
+Answer
+<%= @answer.body.truncate(500) %>
