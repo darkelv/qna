@@ -98,6 +98,8 @@ group :test do
   gem 'launchy'
   gem 'i18n-debug', '~> 1.2'
   gem 'capybara-email'
+  gem 'database_cleaner-active_record'
+  gem 'database_cleaner-redis'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -1,0 +1,4 @@
+.card.mb-4
+  .card-body
+    p.card-text = resource.body.truncate(400)
+    h6= link_to resource.commentable.body.truncate(100), resource.commentable.is_a?(Question) ? question_path(resource.commentable) : question_path(resource.commentable.question)
