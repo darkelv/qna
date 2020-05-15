@@ -1,0 +1,5 @@
+.card.mb-4
+  .card-body
+    h5.card-title = resource.title.truncate(200)
+    p.card-text = resource.body.truncate(400)
+    = link_to "link", question_path(resource)

@@ -24,6 +24,10 @@ gem 'jbuilder', '~> 2.7'
 gem 'cocoon'
 gem "octokit"
 
+# search
+gem 'thinking-sphinx', "~> 4.0"
+gem 'mysql2', '~> 0.4.10', :platform => :ruby
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
@@ -94,6 +98,8 @@ group :test do
   gem 'launchy'
   gem 'i18n-debug', '~> 1.2'
   gem 'capybara-email'
+  gem 'database_cleaner-active_record'
+  gem 'database_cleaner-redis'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -1,0 +1,12 @@
+.justify-content-center
+  h6.text-center = "Search result for: #{@keywords}"
+  .col-12.pt-2
+    - if @keywords.strip.empty?
+      p= "Your request is empty"
+    - elsif @search_result.empty?
+      p= "Nothing has been found"
+    - else
+      .text-center
+        - @search_result.each do |resource|
+          - next if resource.is_a?(User) && resource.id != current_user&.id
+          = render resource.class.to_s.underscore, resource: resource
