@@ -463,7 +463,7 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   omniauth-github
-  pg (>= 0.18, < 2.0)
+  pg (~> 1.2, >= 1.2.3)
   pry-byebug
   pry-doc
   pry-docmore
