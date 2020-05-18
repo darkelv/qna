@@ -1,5 +1,4 @@
-= simple_form_for :search, url: search_index_path, method: :get, local: true do |f|
-  .row
-    = f.input :keywords, label: false, placeholder: "Search"
-    = f.input :resource, label: false, required: false, collection: search_resources, selected: 'all'
-    = f.button :submit, "Search", class: 'btn btn-light'
+= simple_form_for :search, url: search_index_path, method: :get, local: true, html: {:class => 'form-inline' } do |f|
+  = f.input :keywords, label: false, placeholder: "Search", input_html: {class: 'form-control'}
+  = f.input :resource, label: false, required: false, collection: search_resources, selected: 'all', input_html: {class: 'form-control'}
+  = f.button :submit, "Search", class: 'btn btn-secondary'

@@ -31,11 +31,15 @@ feature 'User can sign in', %q(
     end
 
     scenario 'tries to sign up' do
-      click_on 'Sign up'
+      within(".navbar") do
+        click_on 'Sign up'
+      end
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
       fill_in 'Password confirmation', with: user.password
-      click_on 'Sign up'
+      within "#new_user" do
+        click_on 'Sign up'
+      end
 
       expect(page).to have_content "Email has already been taken"
     end
@@ -51,12 +55,15 @@ feature 'User can sign in', %q(
     end
 
     scenario 'tries to sign up' do
-      click_on 'Sign up'
+      within(".navbar") do
+        click_on 'Sign up'
+      end
       fill_in 'Email', with: 'wrong@user.ru'
       fill_in 'Password', with: '12345678'
       fill_in 'Password confirmation', with: '12345678'
-      click_on 'Sign up'
-
+      within("#new_user") do
+        click_on 'Sign up'
+      end
       expect(page).to have_content "Welcome! You have signed up successfully."
     end
   end
