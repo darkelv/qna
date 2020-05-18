@@ -1,8 +1,13 @@
-.row
-  .col-md-8
+.navbar.d-flex.flex-row
+  .p-1
     - if user_signed_in?
-      => link_to "Log out", destroy_user_session_path, method: :delete
       =>link_to "Главная", root_path
-      = link_to "Награды", awards_path
-  .col-md-3
+      => link_to "Награды", awards_path
+      => link_to "Log out", destroy_user_session_path, method: :delete
+    -else
+      => link_to 'Sign up', new_user_registration_path
+      = link_to 'Sign in', new_user_session_path
+  .ml-auto.p-1
+    => link_to 'Ask question', new_question_path
+  .ml-auto.p-1
     = render 'search/form'
