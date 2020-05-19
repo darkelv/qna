@@ -3,7 +3,7 @@ class Link < ApplicationRecord
 
   before_create :update_body, if: ->(link) { link.url =~ GIST_URL_FORMAT }
 
-  belongs_to :linkable, polymorphic: true
+  belongs_to :linkable, polymorphic: true, touch: true
 
   validates :name, :url, presence: true
   validates :url,

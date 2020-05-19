@@ -1,7 +1,6 @@
--cache @question do
-  .question
-    = render 'question_body', question: @question
-
+.question
+  = render 'question_body', question: @question
+- cache [@question, collection_cache_key_for(:answer)] do
   .answers
     = render @question.answers
 

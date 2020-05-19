@@ -19,7 +19,7 @@
         = render 'attachments/attachment', resource: answer
 
       section.answer-links
-        = render 'links/index', resourse: answer
+        = render 'links/index', resource: answer
 
       - if can?(:set_best, answer) && !answer.best?
         p = link_to 'Set as best answer', set_best_answer_path(answer), class: 'set-best-answer-link', remote: false, method: :post
