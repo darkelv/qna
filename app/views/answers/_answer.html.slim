@@ -1,42 +1,43 @@
 - if answer.persisted?
-  div[class="answer-#{answer.id}"]
-    - unless current_user&.author_of?(answer)
-      p.vote
-        =render 'votes/block', data: answer
-    p = answer.body
+  -cache answer do
+    div[class="answer-#{answer.id}"]
+      - unless current_user&.author_of?(answer)
+        p.vote
+          =render 'votes/block', data: answer
+      p = answer.body
 
-    section.answer-comments
-      - if answer.comments.any?
-        p= "Comments"
-        = render answer.comments
+      section.answer-comments
+        - if answer.comments.any?
+          p= "Comments"
+          = render answer.comments
 
-      - if user_signed_in?
-        .answer-comment-form
-          = render 'comments/form', resource: Comment.new, url: answer_comments_path(answer)
+        - if user_signed_in?
+          .answer-comment-form
+            = render 'comments/form', resource: Comment.new, url: answer_comments_path(answer)
 
-    section.answer-files
-      = render 'attachments/attachment', resource: answer
+      section.answer-files
+        = render 'attachments/attachment', resource: answer
 
-    section.answer-links
-      = render 'links/index', resourse: answer
+      section.answer-links
+        = render 'links/index', resourse: answer
 
-    - if can?(:set_best, answer) && !answer.best?
-      p = link_to 'Set as best answer', set_best_answer_path(answer), class: 'set-best-answer-link', remote: false, method: :post
+      - if can?(:set_best, answer) && !answer.best?
+        p = link_to 'Set as best answer', set_best_answer_path(answer), class: 'set-best-answer-link', remote: false, method: :post
 
-    - if can?(:edit, answer)
-      p= link_to "Edit", '#', class: 'edit-answer-link', data: { answer_id: answer.id}
-      = form_with model: answer, class: :hidden, html: { id: "edit-answer-#{answer.id}" } do |f|
-        p
-          = f.label :body, "Your answer"
-          = f.text_area :body
-          = f.fields_for :links do |l|
-            = render 'links/fields', f: l
-        .links
+      - if can?(:edit, answer)
+        p= link_to "Edit", '#', class: 'edit-answer-link', data: { answer_id: answer.id}
+        = form_with model: answer, class: :hidden, html: { id: "edit-answer-#{answer.id}" } do |f|
           p
-            = link_to_add_association "Add_link", f, :links, partial: 'links/fields'
-        p
-          = f.label :files
-          = f.file_field :files, multiple: true
-        = f.submit "Save"
+            = f.label :body, "Your answer"
+            = f.text_area :body
+            = f.fields_for :links do |l|
+              = render 'links/fields', f: l
+          .links
+            p
+              = link_to_add_association "Add_link", f, :links, partial: 'links/fields'
+          p
+            = f.label :files
+            = f.file_field :files, multiple: true
+          = f.submit "Save"
 
-      p= link_to 'Delete answer', answer_path(question_id: answer.question, id: answer), method: :delete
+        p= link_to 'Delete answer', answer_path(question_id: answer.question, id: answer), method: :delete

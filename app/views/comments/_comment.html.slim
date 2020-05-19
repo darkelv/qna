@@ -1,4 +1,5 @@
-p(data-comment-id="#{comment.id}")
-  = comment.body
-  - if can?(:destroy, comment)
-    = link_to '(remove this comment)', comment_path(comment.id), method: :delete, data: { remote: true }
+-cache comment do
+  p(data-comment-id="#{comment.id}")
+    = comment.body
+    - if can?(:destroy, comment)
+      = link_to '(remove this comment)', comment_path(comment.id), method: :delete, data: { remote: true }
