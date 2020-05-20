@@ -16,7 +16,7 @@ ions API', type: :request do
       let(:access_token) { create(:access_token) }
       let!(:questions) { create_list(:question, 2) }
       let(:question) { questions.first }
-      let(:question_response) { json['questions'].first }
+      let(:question_response) { json['questions'].last }
       let!(:answers) { create_list(:answer, 3, question: question) }
 
       before { get '/api/v1/questions', params: { access_token: access_token.token }, headers: headers }
