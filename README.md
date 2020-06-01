@@ -1,24 +1,47 @@
-# README
+**QnA**
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Analog StackOverflow: questions, answers, comments, rating, etc.
 
-Things you may want to cover:
+Educational project thinknetica.com, course 3 RoR advanced
 
-* Ruby version
+**Versions**
 
-* System dependencies
+- Ruby 2.7.0
+- Ruby on Rails 6.0
 
-* Configuration
+**Description**
 
-* Database creation
+_Entities_
 
-* Database initialization
+- User
+- Question, Answer, Comment
+- Link, Award, Vote
+- Authorization
+- Subscription
 
-* How to run the test suite
+_Features_
 
-* Services (job queues, cache servers, search engines, etc.)
+- Agile (user stories)
+- TDD/BDD
+- Ajax
+- File-management (Active Storage)
+- Pub/Sub (ActionCable)
+- Authentication (Devise)
+- oAuth
+- Authorization (CanCanCan)
+- Rest API
+- Background services (ActiveJob, Sideqik)
+- Fulltext search (Sphinx)
+- Deploy: Capistrano
+- Caching
 
-* Deployment instructions
+**Technologies**
 
-* ...
+_Backend_
+- Ruby on Rails
+- PosrgreSQL
+- Services: Sideqik, Sphinx, Monit
+- Server setup: nginx, Passanger, Unicorn
+
+_Frontend_
+- Bootstrap 4

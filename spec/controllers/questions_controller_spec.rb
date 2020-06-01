@@ -179,13 +179,6 @@ RSpec.describe QuestionsController, type: :controller do
       post :vote_up, params: { id: question, format: :js }
       expect(response).to be_forbidden
     end
-    # Fixme если делать тест по шагам через прай он проходит если запускать в общем котле выходит ошибка
-    # it 'author can not vote for his question' do
-    #   question.user = user1
-    #   question.save!
-    #   post :vote_up, params: { id: question, format: :js }
-    #   expect(response).to be_forbidden
-    # end
   end
 
   describe "DELETE #destroy_vote" do
