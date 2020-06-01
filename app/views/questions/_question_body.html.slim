@@ -1,13 +1,14 @@
 - unless current_user&.author_of?(question)
   p.vote
     = render 'votes/block', data: @question
-h1 = @question.title
-p = @question.body
+- cache [question, 'question_content'] do
+  h1 = @question.title
+  p = @question.body
 section.question-files
   = render 'attachments/attachment', resource: @question
 
 section.question-links
-  = render 'links/index', resourse: @question
+  = render 'links/index', resource: @question
 
 section.question-comments
   - if @question.comments.any?
@@ -17,11 +18,11 @@ section.question-comments
   - if user_signed_in?
     .question-comment-form
       = render 'comments/form', resource: Comment.new, url: question_comments_path(@question)
-
-section.awards
-  - if @question.award.present?
-    .question-image
-      = image_tag url_for(@question.award.image), title: @question.award.title, height: '30', width: '30'
+- cache [question, 'question_award'] do
+  section.awards
+    - if @question.award.present?
+      .question-image
+        = image_tag url_for(@question.award.image), title: @question.award.title, height: '30', width: '30'
 section.question-subscription
   - if current_user.present?
     = render 'subscriptions/subscription', resource: question
